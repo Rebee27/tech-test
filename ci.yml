@@ -1,0 +1,30 @@
+name: CI Pipeline
+
+# trigger the CI on pushes on default branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-install:
+    runs-on: ubuntu-latest
+
+    # clones the repository into the GitHub Actions environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # install dependencies
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y build-essential
+
+      # runs "make" and "make install"
+      - name: Build and Install
+        run: |
+          make
+          sudo make install
+          
+      # check that files get installed properly, otherwise fail the CI
+      - name: Verify Installation
+        run: command -v my-program || (echo "Installation failed" && exit 1)
